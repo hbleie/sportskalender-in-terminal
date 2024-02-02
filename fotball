@@ -3,4 +3,4 @@
 # Change to the script's directory
 cd "$(dirname "$0")"
 
-node hoydepunkter.js
+node fotball.js

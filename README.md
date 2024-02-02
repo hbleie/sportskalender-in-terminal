@@ -1,6 +1,6 @@
 ## Sportskalender in Terminal
 
-Displays the Highlight page from VGs sportskalender in the terminal.
+Displays the highlight page or football page from VGs sportskalender in the terminal.
 
 ### Usage
 

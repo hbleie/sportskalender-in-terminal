@@ -1,14 +1,9 @@
-const axios = require('axios');
+import axios from 'axios';
 
-(async () => {
-const websiteURL = "https://www.vg.no/sport/kalender";
+export const sportskalender = async (websiteURL) => {
 const { data } = await axios.get(websiteURL);
 
 let result = await parseHTML(data);
-
-console.log('VGs sportskalender:');
-console.log('-------------------');
-
 
 for (let line of result) {
   console.log(line);
@@ -46,4 +41,4 @@ function parseHTML(html) {
 
     return eventInfo.slice(0,20);
 }
-})();
+};
