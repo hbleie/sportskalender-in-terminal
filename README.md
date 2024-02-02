@@ -10,4 +10,4 @@ add alias to .bashrc or .zshrc
 example: "alias sportskalender='Users/username/path-to-folder/sportskalender-in-terminal/sport'"
 
 if Error: "zsh: permission denied: ./sport"
-run "chmod +x Users/username/path-to-folder/sportskalender-in-terminal/sport"
+run "chmod +x /Users/username/path-to-folder/sportskalender-in-terminal/sport"
