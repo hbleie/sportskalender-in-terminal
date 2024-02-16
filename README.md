@@ -4,7 +4,7 @@ Displays the highlight page or football page from VGs sportskalender in the term
 
 # Sportskalender Zsh Plugin
 
-This is a Zsh plugin that provides commands to run the `hoydepunkter.js` and `fotball.js` scripts from the `sportskalender-in-terminal` repository.
+This is a Zsh plugin that provides commands to display the highlight page or football page from VGs sportskalender in the terminal. The plugin is based on the [sportskalender](https://www.vg.no/sport/kalender) from VG.
 
 ## Installation
 
@@ -43,7 +43,7 @@ This is a Zsh plugin that provides commands to run the `hoydepunkter.js` and `fo
 
 ## Usage
 
-### `hoydepunkter`
+### `høydepunkter`
 
 Displays the highlight page from VGs sportskalender in the terminal.
 
