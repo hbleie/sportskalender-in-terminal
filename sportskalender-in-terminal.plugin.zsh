@@ -3,12 +3,9 @@
 SCRIPT_DIR="${0:A:h}"
 
 function sport() {
-
-  cd $SCRIPT_DIR
-  node hoydepunkter.js
+  node $SCRIPT_DIR/hoydepunkter.js
 }
 
 function fotball() {
-  cd $SCRIPT_DIR
-  node fotball.js
+  node $SCRIPT_DIR/fotball.js
 }
