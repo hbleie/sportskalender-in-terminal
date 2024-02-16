@@ -1,7 +1,3 @@
-## Sportskalender in Terminal
-
-Displays the highlight page or football page from VGs sportskalender in the terminal.
-
 # Sportskalender Zsh Plugin
 
 This is a Zsh plugin that provides commands to display the highlight page or football page from VGs sportskalender in the terminal. The plugin is based on the [sportskalender](https://www.vg.no/sport/kalender) from VG.
