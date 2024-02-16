@@ -75,7 +75,7 @@ function formatEvents(events) {
     let longestTitleLen = 0, longestSportLen = 0
     let longestTitle = "", longestSport = ""
 
-    eventInfo.forEach(line => {
+    events.forEach(line => {
         let parts = line.split('|').map(part => part.trim()); // Split by '|' and remove leading/trailing spaces
 
         if (parts[0].length > longestTitleLen) {
@@ -89,7 +89,7 @@ function formatEvents(events) {
     });
 
     // Add spaces to the end of each line to make the columns line up
-    let formattedLines = eventInfo.map(line => {
+    let formattedLines = events.map(line => {
         let parts = line.split('|').map(part => part.trim()); // Split by '|' and remove leading/trailing spaces
         let spaces = ' '.repeat(longestTitleLen - parts[0].length + 3);
         let spaces2 = ' '.repeat(longestSportLen - parts[1].length + 3);
