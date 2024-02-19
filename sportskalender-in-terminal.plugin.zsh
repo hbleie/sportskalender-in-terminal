@@ -10,6 +10,9 @@ function sport() {
     "høydepunkter")
       node "$SCRIPT_DIR/hoydepunkter.js"
       ;;
+    "vintersport")
+      node "$SCRIPT_DIR/vintersport.js"
+      ;;
     "--help")
       echo "Usage: sport <command>"
       echo "Available commands:"

@@ -1,35 +1,50 @@
 import axios from 'axios';
 
-export const sportskalender = async (websiteURL) => {
+export const sportskalender = async (websiteURL, filter) => {
 const { data } = await axios.get(websiteURL);
 
-let result = await parseHTML(data);
+let result = parseHTML(data, filter);
 
 for (let line of result) {
   console.log(line);
 }
 
-function parseHTML(html) {
+function parseHTML(html, filter) {
     // Find the start of the main section that contains the events
     let mainStart = html.indexOf('<main class="Eventlist_main__FqUi8 grouped background-primary">');
     let mainEnd = html.indexOf('</main>', mainStart);
     let mainContent = html.substring(mainStart, mainEnd);
 
-    // Split the main content into separate events
-    let events = mainContent.split('<article>');
+    let daysWithEvents = mainContent.split('<section class="Eventlist_group__Xr6Ht">');
 
-    // Extract the title and time of each event and combine them into a string
-    let eventInfo = fetchEventInfo(events);
+    let events = daysWithEvents.map((day, index) => {
+        // Skip the first element if it's not an event
+        if (index === 0 && !day.includes('<h1 class="title-medium">')) {
+            return null;
+        }
+        const dateStart = day.indexOf('<h2 class="Eventlist_date__LF1JF label-medium">') + '<h2 class="Eventlist_date__LF1JF label-medium">'.length;  
+        const dateEnd = day.indexOf('</h2>', dateStart);
+        const date = day.substring(dateStart, dateEnd);
 
-    // Remove null elements from the array
-    eventInfo = eventInfo.filter(event => event !== null);
+        // Split the main content into separate events
+        let events = day.split('<article>');
+
+        // Extract the title and time of each event and combine them into a string
+        let eventInfo = fetchEventInfo(events, filter, date);
+
+        eventInfo = [date, ...eventInfo, ' ']
+   
+        return eventInfo;
+    });
     
-    eventInfo = eventInfo.slice(0,20);
+    events = events.flat();
+    // Remove null elements from the array
+    events = events.filter(event => event !== null);
 
-    const formattedLines = formatEvents(eventInfo);
-
+    const formattedLines = formatEvents(events.slice(0,25));
+    
     return formattedLines;
-}
+
 };
 
 /**
@@ -37,7 +52,7 @@ function parseHTML(html) {
  * @param {*} events 
  * @returns {string[]} An array of strings, each containing the title, sport, time and TV channel of an event
  */
-function fetchEventInfo(events) {
+function fetchEventInfo(events, filter) {
     // Extract the title and time of each event and combine them into a string
     let eventInfo = events.map((event, index) => {
         // Skip the first element if it's not an event
@@ -61,6 +76,16 @@ function fetchEventInfo(events) {
         let channelEnd = event.indexOf('</p>', channelStart);
         let channel = event.substring(channelStart, channelEnd);
 
+        switch (filter) {
+            case 'vintersport':
+                if (!vintersport.includes(sport)) {
+                    return null;
+                }
+                break;
+            default:
+                break;
+        }
+
         return title + ' | ' + sport + ' | ' + time + ' | ' + channel;
     });
     return eventInfo;
@@ -75,22 +100,28 @@ function formatEvents(events) {
     let longestTitleLen = 0, longestSportLen = 0
     let longestTitle = "", longestSport = ""
 
+
     events.forEach(line => {
         let parts = line.split('|').map(part => part.trim()); // Split by '|' and remove leading/trailing spaces
-
-        if (parts[0].length > longestTitleLen) {
-            longestTitleLen = parts[0].length;
-            longestTitle = parts[0];
-        }
-        if (parts[1] && parts[1].length > longestSportLen) {
-            longestSportLen = parts[1].length;
-            longestSport = parts[1];
-        }
+        if (parts.length > 2) {
+            if (parts[0].length > longestTitleLen) {
+                longestTitleLen = parts[0].length;
+                longestTitle = parts[0];
+            }
+            if (parts[1] && parts[1].length > longestSportLen) {
+                longestSportLen = parts[1].length;
+                longestSport = parts[1];
+            }
+    }
     });
 
     // Add spaces to the end of each line to make the columns line up
     let formattedLines = events.map(line => {
         let parts = line.split('|').map(part => part.trim()); // Split by '|' and remove leading/trailing spaces
+        // If parts only has one element, then the string is not an event and should be returned
+        if (parts.length < 2) {
+            return parts[0];
+        }
         let spaces = ' '.repeat(longestTitleLen - parts[0].length + 3);
         let spaces2 = ' '.repeat(longestSportLen - parts[1].length + 3);
         if (parts[2].length == 2) {
@@ -99,4 +130,17 @@ function formatEvents(events) {
         return parts[0] + spaces + parts[1] + spaces2 + parts[2] + '  ' + parts[3];
     });
     return formattedLines;
+    }
 }
+
+const vintersport = [
+    'Langrenn',
+    'Skiskyting',
+    'Alpint',
+    'Hopp',
+    'Kombinert',
+    'Snowboard',
+    'Freestyle Ski',
+    'Skøyter',
+    'Ishockey'
+];
