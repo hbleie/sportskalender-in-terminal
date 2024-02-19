@@ -46,10 +46,10 @@ This is a Zsh plugin that provides commands to display the highlight page or foo
 
 Displays the highlight page from VGs sportskalender in the terminal.
 
-Run the command `sport` to display the highlight page.
+Run the command `sport høydepunkter` to display the highlight page.
 
 ### `fotball`
 
 Displays the football page from VGs sportskalender in the terminal.
 
-Run the command `fotball` to display the football page.
+Run the command `sport fotball` to display the football page.
