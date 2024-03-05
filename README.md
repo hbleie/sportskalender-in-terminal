@@ -1,6 +1,6 @@
 # Sportskalender Zsh Plugin
 
-This is a Zsh plugin that provides commands to display the highlight page or football page from VGs sportskalender in the terminal. The plugin is based on the [sportskalender](https://www.vg.no/sport/kalender) from VG.
+This is a Zsh plugin that provides commands to display the highlight page, football page or winter sports from VGs sportskalender in the terminal. The plugin is based on the [sportskalender](https://www.vg.no/sport/kalender) from VG.
 
 <img width="758" alt="image" src="https://github.com/hbleie/sportskalender-in-terminal/assets/92336221/480a8008-32ea-4141-b2ff-1acb1e6795dd">
 
@@ -53,3 +53,10 @@ Run the command `sport høydepunkter` to display the highlight page.
 Displays the football page from VGs sportskalender in the terminal.
 
 Run the command `sport fotball` to display the football page.
+
+### `vintersport`
+
+Displays all winter sports in VGs sportskalender in the terminal.
+
+Run the command `sport vintersport` to display vintersport events
+
