@@ -18,13 +18,13 @@ This is a Zsh plugin that provides commands to display the highlight page, footb
 
 ### Antigen
 
-1. Add `antigen bundle johannsl/sportskalender-in-terminal` to your `.zshrc` with your other bundle commands.
+1. Add `antigen bundle hbleie/sportskalender-in-terminal` to your `.zshrc` with your other bundle commands.
 
 2. Start a new terminal session.
 
 ### Zgen
 
-1. Add `zgen load johannsl/sportskalender-in-terminal` to your `.zshrc` in the same function you're doing your other `zgen load` calls in.
+1. Add `zgen load hbleie/sportskalender-in-terminal` to your `.zshrc` in the same function you're doing your other `zgen load` calls in.
 
 2. Start a new terminal session.
 
