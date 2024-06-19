@@ -25,14 +25,7 @@ function parseEvents(events, filter) {
     
     return formattedLines;
 
-};
-
-const options = {
-  weekday: 'long',
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-};
+}
 
 /**
  * Extract the title and time of each event and combine them into a string
