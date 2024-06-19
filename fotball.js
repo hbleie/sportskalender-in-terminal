@@ -1,9 +1,8 @@
-import { sportskalender } from "./parse-html.js";
+import { sportskalender } from "./parse-events.js";
 
 (async () => {
-  const websiteURL = 'https://www.vg.no/sport/kalender/fotball';
+  const websiteURL = 'https://api.vg.no/sportskalender/v1/events?fromDate=';
   console.log('VGs fotballkalender:');
-  console.log('');
 
-  sportskalender(websiteURL);
+  sportskalender(websiteURL, 'fotball');
 })();

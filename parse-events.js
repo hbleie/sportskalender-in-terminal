@@ -1,50 +1,37 @@
 import axios from 'axios';
 
 export const sportskalender = async (websiteURL, filter) => {
-const { data } = await axios.get(websiteURL);
+const { data } = await axios.get(`${websiteURL}${new Date().toISOString()}`);
 
-let result = parseHTML(data, filter);
+let result = parseEvents(data, filter);
 
 for (let line of result) {
   console.log(line);
 }
+/**
+ * 
+ * @param {Record<string, any>[]} events 
+ * @param {string} filter 
+ * @returns 
+ */
+function parseEvents(events, filter) {
 
-function parseHTML(html, filter) {
-    // Find the start of the main section that contains the events
-    let mainStart = html.indexOf('<main class="Eventlist_main__FqUi8 grouped background-primary">');
-    let mainEnd = html.indexOf('</main>', mainStart);
-    let mainContent = html.substring(mainStart, mainEnd);
+    let eventInfo = fetchEventInfo(events, filter)
 
-    let daysWithEvents = mainContent.split('<section class="Eventlist_group__Xr6Ht">');
-
-    let events = daysWithEvents.map((day, index) => {
-        // Skip the first element if it's not an event
-        if (index === 0 && !day.includes('<h1 class="title-medium">')) {
-            return null;
-        }
-        const dateStart = day.indexOf('<h2 class="Eventlist_date__LF1JF label-medium">') + '<h2 class="Eventlist_date__LF1JF label-medium">'.length;  
-        const dateEnd = day.indexOf('</h2>', dateStart);
-        const date = day.substring(dateStart, dateEnd);
-
-        // Split the main content into separate events
-        let events = day.split('<article>');
-
-        // Extract the title and time of each event and combine them into a string
-        let eventInfo = fetchEventInfo(events, filter, date);
-
-        eventInfo = [date, ...eventInfo, ' ']
-   
-        return eventInfo;
-    });
-    
-    events = events.flat();
     // Remove null elements from the array
-    events = events.filter(event => event !== null);
+    eventInfo = eventInfo.filter(event => event !== null);
 
-    const formattedLines = formatEvents(events.slice(0,25));
+    const formattedLines = formatEvents(eventInfo.slice(0,25));
     
     return formattedLines;
 
+};
+
+const options = {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
 };
 
 /**
@@ -54,27 +41,24 @@ function parseHTML(html, filter) {
  */
 function fetchEventInfo(events, filter) {
     // Extract the title and time of each event and combine them into a string
+    const options = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    };  
+    let date = ""
     let eventInfo = events.map((event, index) => {
-        // Skip the first element if it's not an event
-        if (index === 0 && !event.includes('<h1 class="title-medium">')) {
-            return null;
-        }
 
-        let titleStart = event.indexOf('<h1 class="title-medium">') + '<h1 class="title-medium">'.length;
-        let titleEnd = event.indexOf('</h1>', titleStart);
-        let title = event.substring(titleStart, titleEnd);
+        const title = event?.title
 
-        let timeStart = event.indexOf('<time class="label-medium">') + '<time class="label-medium">'.length;
-        let timeEnd = event.indexOf('</time>', timeStart);
-        let time = event.substring(timeStart, timeEnd);
+        const sport = event?.sport?.title
 
-        let sportStart = event.indexOf('<p class="EventCard_metaTitle__vzlD5 color-accent">') + '<p class="EventCard_metaTitle__vzlD5 color-accent">'.length;
-        let sportEnd = event.indexOf('</p>', sportStart);
-        let sport = event.substring(sportStart, sportEnd);
+        const time = new Date(event?.eventStart).toLocaleTimeString('no-NO')
 
-        let channelStart = event.indexOf('<p class="EventCard_footerText__l0n8l label-medium label-secondary">') + '<p class="EventCard_footerText__l0n8l label-medium label-secondary">'.length;
-        let channelEnd = event.indexOf('</p>', channelStart);
-        let channel = event.substring(channelStart, channelEnd);
+        const eventDate = new Date(event.eventStart).toLocaleDateString('no-NO', options)
+
+        const channel = event?.streams[0]?.title
 
         switch (filter) {
             case 'vintersport':
@@ -82,13 +66,30 @@ function fetchEventInfo(events, filter) {
                     return null;
                 }
                 break;
+            case 'fotball':
+                if (sport !== 'Fotball'){
+                    return null
+                }
+                break;
             default:
                 break;
         }
 
+        if (eventDate !== date) {
+            date = eventDate
+            return [
+                '',
+                date,
+                title + ' | ' + sport + ' | ' + time + ' | ' + channel
+            ]
+        }
+
         return title + ' | ' + sport + ' | ' + time + ' | ' + channel;
     });
-    return eventInfo;
+
+
+
+    return eventInfo.flat(Infinity);
 }
 
 /**
@@ -99,7 +100,6 @@ function fetchEventInfo(events, filter) {
 function formatEvents(events) {
     let longestTitleLen = 0, longestSportLen = 0
     let longestTitle = "", longestSport = ""
-
 
     events.forEach(line => {
         let parts = line.split('|').map(part => part.trim()); // Split by '|' and remove leading/trailing spaces
