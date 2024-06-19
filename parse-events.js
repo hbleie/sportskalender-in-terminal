@@ -58,6 +58,10 @@ function fetchEventInfo(events, filter) {
 
         const eventDate = new Date(event.eventStart).toLocaleDateString('no-NO', options)
 
+        if (new Date(event.eventStart).getTime() < new Date().getTime()) {
+            return null
+        }
+
         const channel = event?.streams[0]?.title
 
         switch (filter) {
