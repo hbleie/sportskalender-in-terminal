@@ -23,18 +23,18 @@ jobs:
           SHA256=$(curl -L -s "https://github.com/hbleie/sportskalender-in-terminal/releases/download/${VERSION}/sportskalender-in-terminal.plugin.zsh" | shasum -a 256 | awk '{print $1}')
           
           # Update the formula file
-          sed -i.bak "s/version \"[^\"]*\"/version \"${VERSION}\"/" homebrew-hbleie/sport.rb
-          sed -i.bak "s/sha256 \"[^\"]*\"/sha256 \"${SHA256}\"/" homebrew-hbleie/sport.rb
+          sed -i.bak "s/version \"[^\"]*\"/version \"${VERSION}\"/" homebrew-hbleie/sportskalender-in-terminal.rb
+          sed -i.bak "s/sha256 \"[^\"]*\"/sha256 \"${SHA256}\"/" homebrew-hbleie/sportskalender-in-terminal.rb
           
           # Clean up backup file
-          rm homebrew-hbleie/sport.rb.bak
+          rm homebrew-hbleie/sportskalender-in-terminal.rb.bak
 
       - name: Commit changes
         run: |
           cd homebrew-hbleie
           git config --local user.name "github-actions"
           git config --local user.email "github-actions@github.com"
-          git add sport.rb
+          git add sportskalender-in-terminal.rb
           git commit -m "Update formula for version ${VERSION}" || echo "No changes to commit"
 
       - name: Push changes
