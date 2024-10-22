@@ -32,10 +32,12 @@ jobs:
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ env.tar_file }} # Use the exported TAR_FILE
-          asset_name: ${{ env.tar_file }} # Use the exported TAR_FILE
+          upload_url: ${{ github.event.release.upload_url }} # Use the upload URL from the release event
+          asset_path: ${{ env.tar_file }} # The path to the tarball file created earlier
+          asset_name: ${{ env.tar_file }} # Name of the asset for the release
           asset_content_type: application/gzip
+        env:
+          GITHUB_TOKEN: ${{ secrets.PUBLISHER_TOKEN }}
 
       - name: Clone Homebrew Tap
         run: |
