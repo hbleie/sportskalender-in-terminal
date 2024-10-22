@@ -2,17 +2,27 @@
 
 This is a Zsh plugin that provides commands to display the highlight page, football page or winter sports from VGs sportskalender in the terminal. The plugin is based on the [sportskalender](https://www.vg.no/sport/kalender) from VG.
 
-<img width="713" alt="image" src="https://github.com/hbleie/sportskalender-in-terminal/assets/92336221/bc93acb7-247d-4646-a50b-c84c761c0ffd">
+![image](https://github.com/hbleie/sportskalender-in-terminal/assets/92336221/bc93acb7-247d-4646-a50b-c84c761c0ffd)
 
 
 ## Installation
 
 ### Oh My Zsh
 
-1. Clone this repository into `$ZSH_CUSTOM/plugins` (by default `~/.oh-my-zsh/custom/plugins`)
+1. Clone this repository into `$ZSH_CUSTOM/plugins` (by default `~/.oh-my-zsh/custom/plugins`) using the following command
 
-2. Add the plugin to the list of plugins for Oh My Zsh to load
-    plugins=(... sportskalender-in-terminal)
+```bash
+git clone git@github.com:hbleie/sportskalender-in-terminal.git ~/.oh-my-zsh/custom/plugins/sportskalender-in-terminal
+```
+
+2. Add the plugin to the list of plugin for Oh My Zsh to load
+
+```bash
+plugins=(
+    # other plugins...
+    zsh-autosuggestions
+)
+```
 
 3. Start a new terminal session.
 
@@ -59,4 +69,3 @@ Run the command `sport fotball` to display the football page.
 Displays all winter sports in VGs sportskalender in the terminal.
 
 Run the command `sport vintersport` to display vintersport events
-
