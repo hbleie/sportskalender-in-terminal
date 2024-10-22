@@ -1,4 +1,4 @@
-name: Update Homebrew Formula
+name: Release and Update Homebrew Formula
 
 on:
   release:
@@ -12,6 +12,44 @@ jobs:
       - name: Checkout the sportskalender-in-terminal repo
         uses: actions/checkout@v2
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16' # Specify the Node.js version you want to use
+
+      - name: Install Dependencies
+        run: npm install # Installs dependencies listed in package.json
+
+      - name: Create Tarball
+        id: create_tarball
+        run: |
+          VERSION=$(echo "${GITHUB_REF}" | sed 's|refs/tags/||')
+          TAR_FILE="sportskalender-in-terminal-${VERSION}.tar.gz"
+          tar -czf "$TAR_FILE" sportskalender-in-terminal.plugin.zsh # Adjust to include necessary files
+          echo "Tarball created: $TAR_FILE"
+          echo "tar_file=$TAR_FILE" >> $GITHUB_ENV # Export TAR_FILE for later steps
+
+      - name: Check if Tarball Exists
+        run: |
+          ls -l  # List files in the current directory for debugging
+          echo "Looking for tarball: ${{ env.tar_file }}"
+          if [ -f "${{ env.tar_file }}" ]; then
+            echo "Tarball found: ${{ env.tar_file }}"
+          else
+            echo "Tarball not found: ${{ env.tar_file }}"
+            exit 1
+          fi
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ github.event.release.upload_url }} # Automatically populated upload URL
+          asset_path: ${{ env.tar_file }} # The path to the tarball file created earlier
+          asset_name: ${{ env.tar_file }} # Name of the asset for the release
+          asset_content_type: application/gzip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Use the built-in GitHub token for authentication
+
       - name: Clone Homebrew Tap
         run: |
           git clone https://x-access-token:${{ secrets.PUBLISHER_TOKEN }}@github.com/hbleie/homebrew-hbleie.git homebrew-hbleie
@@ -20,34 +58,22 @@ jobs:
         run: |
           # Fetch the latest release version
           VERSION=$(echo "${GITHUB_REF}" | sed 's|refs/tags/||')
-          SHA256=$(curl -L -s "https://github.com/hbleie/sportskalender-in-terminal/releases/download/${VERSION}/sportskalender-in-terminal.plugin.zsh" | shasum -a 256 | awk '{print $1}')
           
+          # Update the URL to point to the new tarball
+          URL="https://github.com/hbleie/sportskalender-in-terminal/releases/download/${VERSION}/sportskalender-in-terminal-${VERSION}.tar.gz"
+
+          # Calculate the SHA256 checksum for the new tarball
+          SHA256=$(curl -L -s "${URL}" | shasum -a 256 | awk '{print $1}')
+
           # Update the formula file
           sed -i.bak "s/version \"[^\"]*\"/version \"${VERSION}\"/" homebrew-hbleie/sportskalender-in-terminal.rb
           sed -i.bak "s/sha256 \"[^\"]*\"/sha256 \"${SHA256}\"/" homebrew-hbleie/sportskalender-in-terminal.rb
           
+          # Update the URL in the formula file
+          sed -i.bak "s|url \"[^\"]*\"|url \"${URL}\"|" homebrew-hbleie/sportskalender-in-terminal.rb
+          
           # Clean up backup file
           rm homebrew-hbleie/sportskalender-in-terminal.rb.bak
-
-      - name: Create Release Asset
-        run: |
-          VERSION=$(echo "${GITHUB_REF}" | sed 's|refs/tags/||')
-          # Create a tar.gz file including the JavaScript files and the Zsh plugin
-          tar -czvf sportskalender-in-terminal-${VERSION}.tar.gz \
-              sportskalender-in-terminal.plugin.zsh \
-              fotball.js \
-              hoydepunkter.js \
-              vintersport.js
-          
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: sportskalender-in-terminal-${VERSION}.tar.gz
-          asset_name: sportskalender-in-terminal-${VERSION}.tar.gz
-          asset_content_type: application/gzip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use the default token provided by GitHub
 
       - name: Commit changes
         run: |
@@ -56,8 +82,10 @@ jobs:
           git config --local user.email "github-actions@github.com"
           git add sportskalender-in-terminal.rb
           git commit -m "Update formula for version ${VERSION}" || echo "No changes to commit"
-      
+
       - name: Push changes
         run: |
           cd homebrew-hbleie
           git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.PUBLISHER_TOKEN }} # Use your publisher token or keep this line if using the built-in token
