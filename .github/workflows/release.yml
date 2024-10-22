@@ -14,8 +14,7 @@ jobs:
 
       - name: Clone Homebrew Tap
         run: |
-          git clone https://github.com/hbleie/homebrew-hbleie.git homebrew-hbleie
-          cd homebrew-hbleie
+          git clone https://x-access-token:${{ secrets.PUBLISHER_TOKEN }}@github.com/hbleie/homebrew-hbleie.git homebrew-hbleie
 
       - name: Update Homebrew Formula
         run: |
