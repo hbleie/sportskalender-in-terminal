@@ -33,7 +33,11 @@ jobs:
         run: |
           VERSION=$(echo "${GITHUB_REF}" | sed 's|refs/tags/||')
           # Create a tar.gz file including the JavaScript files and the Zsh plugin
-          tar -czvf sportskalender-in-terminal-${VERSION}.tar.gz -C . sportskalender-in-terminal.plugin.zsh fotball.js hoydepunkter.js vintersport.js
+          tar -czvf sportskalender-in-terminal-${VERSION}.tar.gz \
+              sportskalender-in-terminal.plugin.zsh \
+              fotball.js \
+              hoydepunkter.js \
+              vintersport.js
           
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
