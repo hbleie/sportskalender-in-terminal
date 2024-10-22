@@ -1,9 +1,8 @@
 name: Create Release
 
 on:
-  push:
-    tags:
-      - 'v*.*.*'  # Trigger the workflow when a version tag (e.g., v1.0.0) is pushed
+  release:
+    types: [published]
 
 jobs:
   release:
