@@ -1,3 +1,4 @@
+#!/bin/zsh
 # sportskalender.plugin.zsh
 # Get the directory of the current script
 SCRIPT_DIR="${0:A:h}"
@@ -25,3 +26,6 @@ function sport() {
       ;;
   esac
 }
+
+# Call the function with the provided arguments
+sport "$@"
