@@ -12,20 +12,18 @@ jobs:
       - name: Checkout the sportskalender-in-terminal repo
         uses: actions/checkout@v2
 
-      - name: Set up Ruby (if needed for your project)
-        uses: ruby/setup-ruby@v1
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
-          ruby-version: '2.7' # or your required version
+          node-version: '16' # Specify the Node.js version you want to use
 
-      - name: Install Dependencies (if applicable)
+      - name: Install Dependencies
         run: |
-          # Add commands to install dependencies here, e.g., for a Ruby project
-          bundle install
+          npm install # Installs dependencies listed in package.json
 
       - name: Build the Project (if applicable)
         run: |
-          # Add commands to build your project here if necessary
-          # For example, compile source code or prepare files
+          npm run build # Adjust if you have a build script defined in package.json
 
       - name: Create Tarball
         run: |
