@@ -16,8 +16,9 @@ function sport() {
     "--help")
       echo "Usage: sport <command>"
       echo "Available commands:"
-      echo "  fotball        - Runs the football script"
-      echo "  høydepunkter   - Runs the hoydepunkter script"
+      echo "  fotball        - Returns football events"
+      echo "  høydepunkter   - Returns highlight events"
+      echo "  vintersport   - Returns winter sports events"
       ;;
     *)
       echo "Invalid command. Please see 'sport --help' for available commands."
