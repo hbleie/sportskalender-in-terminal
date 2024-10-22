@@ -22,7 +22,9 @@ universal_binaries:
 brews:
   - name: sportskalender-in-terminal
     homepage: "https://github.com/hbleie/sportskalender-in-terminal"
-    tap_name: hbleie/homebrew-hbleie
+    tap:
+      owner: hbleie
+      name: homebrew-hbleie
 
 checksum:
   name_template: 'checksums.txt'
