@@ -18,16 +18,20 @@ jobs:
 
       - name: Update Homebrew Formula
         run: |
-          # Fetch the latest release version
-          VERSION=$(echo "${GITHUB_REF}" | sed 's|refs/tags/||')
-          SHA256=$(curl -L -s "https://github.com/hbleie/sportskalender-in-terminal/releases/download/${VERSION}/sportskalender-in-terminal.plugin.zsh" | shasum -a 256 | awk '{print $1}')
-          
-          # Update the formula file
-          sed -i.bak "s/version \"[^\"]*\"/version \"${VERSION}\"/" homebrew-hbleie/sportskalender-in-terminal.rb
-          sed -i.bak "s/sha256 \"[^\"]*\"/sha256 \"${SHA256}\"/" homebrew-hbleie/sportskalender-in-terminal.rb
-          
-          # Clean up backup file
-          rm homebrew-hbleie/sportskalender-in-terminal.rb.bak
+           # Fetch the latest release version
+            VERSION=$(echo "${GITHUB_REF}" | sed 's|refs/tags/||')
+            
+            # Calculate the SHA256 checksum for the new tarball
+            SHA256=$(curl -L -s "https://github.com/hbleie/sportskalender-in-terminal/releases/download/${VERSION}/sportskalender-in-terminal-1.0.0.tar.gz" | shasum -a 256 | awk '{print $1}')
+  
+            # Update the formula file
+            sed -i.bak "s/version \"[^\"]*\"/version \"${VERSION}\"/" homebrew-hbleie/sportskalender-in-terminal.rb
+            sed -i.bak "s/sha256 \"[^\"]*\"/sha256 \"${SHA256}\"/" homebrew-hbleie/sportskalender-in-terminal.rb
+            
+            # Update the URL in the formula file
+            sed -i.bak "s|url \"[^\"]*\"|url \"https://github.com/hbleie/sportskalender-in-terminal/releases/download/${VERSION}/sportskalender-in-terminal-${VERSION}.tar.gz\"|" homebrew-hbleie/sportskalender-in-terminal.rb
+            # Clean up backup file
+            rm homebrew-hbleie/sportskalender-in-terminal.rb.bak
 
       - name: Commit changes
         run: |
