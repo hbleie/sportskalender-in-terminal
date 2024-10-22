@@ -27,7 +27,7 @@ jobs:
           sed -i.bak "s/sha256 \"[^\"]*\"/sha256 \"${SHA256}\"/" homebrew-hbleie/sport.rb
           
           # Clean up backup file
-          rm homebrew-hbleie/Formula/sport.rb.bak
+          rm homebrew-hbleie/sport.rb.bak
 
       - name: Commit changes
         run: |
