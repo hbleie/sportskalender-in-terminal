@@ -73,16 +73,6 @@ jobs:
           # Update the URL in the formula file
           sed -i.bak "s|url \"[^\"]*\"|url \"${URL}\"|" homebrew-hbleie/sportskalender-in-terminal.rb
 
-          # Insert installation of scripts into the formula, making sure to format correctly
-          echo "  def install" >> homebrew-hbleie/sportskalender-in-terminal.rb
-          echo "    bin.install \"sportskalender-in-terminal.plugin.zsh\" => \"sport\"" >> homebrew-hbleie/sportskalender-in-terminal.rb
-          echo "    # Install the scripts" >> homebrew-hbleie/sportskalender-in-terminal.rb
-          echo "    bin.install \"fotball.js\" => \"fotball\"" >> homebrew-hbleie/sportskalender-in-terminal.rb
-          echo "    bin.install \"hoydepunkter.js\" => \"hoydepunkter\"" >> homebrew-hbleie/sportskalender-in-terminal.rb
-          echo "    bin.install \"vintersport.js\" => \"vintersport\"" >> homebrew-hbleie/sportskalender-in-terminal.rb
-          echo "    bin.install \"parse-events.js\" => \"parse-events\"" >> homebrew-hbleie/sportskalender-in-terminal.rb
-          echo "  end" >> homebrew-hbleie/sportskalender-in-terminal.rb
-
           # Clean up backup file only if it exists
           [ -f homebrew-hbleie/sportskalender-in-terminal.rb.bak ] && rm homebrew-hbleie/sportskalender-in-terminal.rb.bak
 
