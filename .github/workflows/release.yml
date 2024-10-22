@@ -25,7 +25,8 @@ jobs:
         run: |
           VERSION=$(echo "${GITHUB_REF}" | sed 's|refs/tags/||')
           TAR_FILE="sportskalender-in-terminal-${VERSION}.tar.gz"
-          tar -czf "$TAR_FILE" sportskalender-in-terminal.plugin.zsh # Adjust to include necessary files
+          # Create a tarball including all necessary scripts and the Zsh plugin
+          tar -czf "$TAR_FILE" sportskalender-in-terminal.plugin.zsh fotball.js hoydepunkter.js vintersport.js # Adjust to include necessary files
           echo "Tarball created: $TAR_FILE"
           echo "tar_file=$TAR_FILE" >> $GITHUB_ENV # Export TAR_FILE for later steps
 
