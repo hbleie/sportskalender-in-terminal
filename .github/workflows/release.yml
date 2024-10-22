@@ -22,16 +22,19 @@ jobs:
           npm install # Installs dependencies listed in package.json
 
       - name: Create Tarball
+        id: create_tarball
         run: |
           VERSION=$(echo "${GITHUB_REF}" | sed 's|refs/tags/||')
-          tar -czf sportskalender-in-terminal-${VERSION}.tar.gz sportskalender-in-terminal.plugin.zsh # Adjust to include necessary files
+          TAR_FILE="sportskalender-in-terminal-${VERSION}.tar.gz"
+          tar -czf "$TAR_FILE" sportskalender-in-terminal.plugin.zsh # Adjust to include necessary files
+          echo "tar_file=$TAR_FILE" >> $GITHUB_ENV # Export TAR_FILE for later steps
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: sportskalender-in-terminal-${VERSION}.tar.gz
-          asset_name: sportskalender-in-terminal-${VERSION}.tar.gz
+          asset_path: ${{ env.tar_file }} # Use the exported TAR_FILE
+          asset_name: ${{ env.tar_file }} # Use the exported TAR_FILE
           asset_content_type: application/gzip
 
       - name: Clone Homebrew Tap
@@ -73,3 +76,4 @@ jobs:
           git push origin main
         env:
           GITHUB_TOKEN: ${{ secrets.PUBLISHER_TOKEN }}
+
