@@ -1,5 +1,3 @@
-version: 2
-
 builds:
   - binary: sportskalender-in-terminal
     goos:
@@ -20,7 +18,8 @@ universal_binaries:
   - replace: true
 
 brews:
-  - name: sportskalender-in-terminal
+  -
+    name: sportskalender-in-terminal
     homepage: "https://github.com/hbleie/sportskalender-in-terminal"
     tap:
       owner: hbleie
