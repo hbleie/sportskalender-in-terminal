@@ -21,13 +21,26 @@ jobs:
       - name: Create a tarball
         run: |
           mkdir -p dist
-          tar -czvf dist/sportskalender-in-terminal-${{ github.event.release.tag_name }}.tar.gz sportskalender-in-terminal.plugin.zsh
+          tar -czvf dist/sportskalender-in-terminal-${{ github.ref_name }}.tar.gz sportskalender-in-terminal.plugin.zsh
 
-      # Step 4: Upload the tarball as a release asset
+      # Step 4: Create a GitHub Release
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}  # Use the Git tag as the release version
+          release_name: Release ${{ github.ref_name }}  # Use the tag name as the release name
+          draft: false
+          prerelease: false
+          files: dist/sportskalender-in-terminal-${{ github.ref_name }}.tar.gz
+
+      # Step 5: Upload the tarball as a release asset
       - name: Upload release asset
         uses: actions/upload-release-asset@v1
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: dist/sportskalender-in-terminal-${{ github.event.release.tag_name }}.tar.gz
-          asset_name: sportskalender-in-terminal-${{ github.event.release.tag_name }}.tar.gz
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/sportskalender-in-terminal-${{ github.ref_name }}.tar.gz
+          asset_name: sportskalender-in-terminal-${{ github.ref_name }}.tar.gz
           asset_content_type: application/gzip
