@@ -14,15 +14,18 @@ builds:
       - -mod=mod
       
 release:
-  # Include additional files (Node.js scripts) in the release artifacts
-  files:
-    - cmd/fotball.js
-    - cmd/hoydepunkter.js
-    - cmd/vintersport.js
   prerelease: auto
 
 universal_binaries:
   - replace: true
+
+artifacts:
+  - src: cmd/fotball.js
+    dst: fotball.js
+  - src: cmd/hoydepunkter.js
+    dst: hoydepunkter.js
+  - src: cmd/vintersport.js
+    dst: vintersport.js
 
 brews:
   - name: sport
