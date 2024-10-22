@@ -26,6 +26,8 @@ jobs:
       # Step 4: Upload the tarball as a release asset
       - name: Upload release asset
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.PUBLISHER_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: dist/sportskalender-in-terminal-${{ github.event.release.tag_name }}.tar.gz
