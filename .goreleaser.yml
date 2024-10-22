@@ -1,7 +1,7 @@
 version: 2
 
 builds:
-  - binary: sportskalender-in-terminal
+  - binary: sport
     goos:
       - darwin
       - linux
@@ -12,6 +12,10 @@ builds:
       - CGO_ENABLED=0
     flags:
       - -mod=mod
+    files:
+      - "cmd/fotball.js"         # Include fotball.js
+      - "cmd/hoydepunkter.js"    # Include hoydepunkter.js
+      - "cmd/vintersport.js"      # Include vintersport.js
 
 release:
   prerelease: auto
@@ -20,7 +24,7 @@ universal_binaries:
   - replace: true
 
 brews:
-  - name: sportskalender-in-terminal
+  - name: sport
     homepage: "https://github.com/hbleie/sportskalender-in-terminal"
     repository:
       owner: hbleie
