@@ -1,4 +1,4 @@
-name: Update Homebrew Formula
+name: Release and Update Homebrew Formula
 
 on:
   release:
@@ -12,26 +12,58 @@ jobs:
       - name: Checkout the sportskalender-in-terminal repo
         uses: actions/checkout@v2
 
+      - name: Set up Ruby (if needed for your project)
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.7' # or your required version
+
+      - name: Install Dependencies (if applicable)
+        run: |
+          # Add commands to install dependencies here, e.g., for a Ruby project
+          bundle install
+
+      - name: Build the Project (if applicable)
+        run: |
+          # Add commands to build your project here if necessary
+          # For example, compile source code or prepare files
+
+      - name: Create Tarball
+        run: |
+          VERSION=$(echo "${GITHUB_REF}" | sed 's|refs/tags/||')
+          tar -czf sportskalender-in-terminal-${VERSION}.tar.gz sportskalender-in-terminal.plugin.zsh # Adjust to include necessary files
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: sportskalender-in-terminal-${VERSION}.tar.gz
+          asset_name: sportskalender-in-terminal-${VERSION}.tar.gz
+          asset_content_type: application/gzip
+
       - name: Clone Homebrew Tap
         run: |
           git clone https://x-access-token:${{ secrets.PUBLISHER_TOKEN }}@github.com/hbleie/homebrew-hbleie.git homebrew-hbleie
 
       - name: Update Homebrew Formula
         run: |
-           # Fetch the latest release version
-            VERSION=$(echo "${GITHUB_REF}" | sed 's|refs/tags/||')
-            
-            # Calculate the SHA256 checksum for the new tarball
-            SHA256=$(curl -L -s "https://github.com/hbleie/sportskalender-in-terminal/releases/download/${VERSION}/sportskalender-in-terminal-1.0.0.tar.gz" | shasum -a 256 | awk '{print $1}')
-  
-            # Update the formula file
-            sed -i.bak "s/version \"[^\"]*\"/version \"${VERSION}\"/" homebrew-hbleie/sportskalender-in-terminal.rb
-            sed -i.bak "s/sha256 \"[^\"]*\"/sha256 \"${SHA256}\"/" homebrew-hbleie/sportskalender-in-terminal.rb
-            
-            # Update the URL in the formula file
-            sed -i.bak "s|url \"[^\"]*\"|url \"https://github.com/hbleie/sportskalender-in-terminal/releases/download/${VERSION}/sportskalender-in-terminal-${VERSION}.tar.gz\"|" homebrew-hbleie/sportskalender-in-terminal.rb
-            # Clean up backup file
-            rm homebrew-hbleie/sportskalender-in-terminal.rb.bak
+          # Fetch the latest release version
+          VERSION=$(echo "${GITHUB_REF}" | sed 's|refs/tags/||')
+          
+          # Update the URL to point to the new tarball
+          URL="https://github.com/hbleie/sportskalender-in-terminal/releases/download/${VERSION}/sportskalender-in-terminal-${VERSION}.tar.gz"
+
+          # Calculate the SHA256 checksum for the new tarball
+          SHA256=$(curl -L -s "${URL}" | shasum -a 256 | awk '{print $1}')
+
+          # Update the formula file
+          sed -i.bak "s/version \"[^\"]*\"/version \"${VERSION}\"/" homebrew-hbleie/sportskalender-in-terminal.rb
+          sed -i.bak "s/sha256 \"[^\"]*\"/sha256 \"${SHA256}\"/" homebrew-hbleie/sportskalender-in-terminal.rb
+          
+          # Update the URL in the formula file
+          sed -i.bak "s|url \"[^\"]*\"|url \"${URL}\"|" homebrew-hbleie/sportskalender-in-terminal.rb
+          
+          # Clean up backup file
+          rm homebrew-hbleie/sportskalender-in-terminal.rb.bak
 
       - name: Commit changes
         run: |
