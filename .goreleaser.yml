@@ -12,13 +12,14 @@ builds:
       - CGO_ENABLED=0
     flags:
       - -mod=mod
-      
+
+# Include additional files (Node.js scripts) in the release artifacts
+extra_files:
+  - cmd/fotball.js
+  - cmd/hoydepunkter.js
+  - cmd/vintersport.js
+
 release:
-  # Include additional files (Node.js scripts) in the release artifacts
-  files:
-    - cmd/fotball.js
-    - cmd/hoydepunkter.js
-    - cmd/vintersport.js
   prerelease: auto
 
 universal_binaries:
