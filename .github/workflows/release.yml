@@ -1,0 +1,46 @@
+name: Update Homebrew Formula
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  update-formula:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the sportskalender-in-terminal repo
+        uses: actions/checkout@v2
+
+      - name: Clone Homebrew Tap
+        run: |
+          git clone https://github.com/hbleie/homebrew-hbleie.git homebrew-hbleie
+          cd homebrew-hbleie
+
+      - name: Update Homebrew Formula
+        run: |
+          # Fetch the latest release version
+          VERSION=$(echo "${GITHUB_REF}" | sed 's|refs/tags/||')
+          SHA256=$(curl -L -s "https://github.com/hbleie/sportskalender-in-terminal/releases/download/${VERSION}/sportskalender-in-terminal.plugin.zsh" | shasum -a 256 | awk '{print $1}')
+          
+          # Update the formula file
+          sed -i.bak "s/version \"[^\"]*\"/version \"${VERSION}\"/" homebrew-hbleie/Formula/sport.rb
+          sed -i.bak "s/sha256 \"[^\"]*\"/sha256 \"${SHA256}\"/" homebrew-hbleie/Formula/sport.rb
+          
+          # Clean up backup file
+          rm homebrew-hbleie/Formula/sport.rb.bak
+
+      - name: Commit changes
+        run: |
+          cd homebrew-hbleie
+          git config --local user.name "github-actions"
+          git config --local user.email "github-actions@github.com"
+          git add Formula/sport.rb
+          git commit -m "Update formula for version ${VERSION}" || echo "No changes to commit"
+
+      - name: Push changes
+        run: |
+          cd homebrew-hbleie
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.PUBLISHER_TOKEN }}
